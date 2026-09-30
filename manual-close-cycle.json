@@ -1,0 +1,26 @@
+{
+  "kind": "MANUAL_CLOSE_CYCLE_V1",
+  "started_at": "2026-09-30T04:04:11.312668+00:00",
+  "mode": "SIMULATION_ONLY",
+  "steps": [
+    {
+      "tool": "fetch_manual_quote.py",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/runner/work/-AAA/-AAA/tools/fetch_manual_quote.py\", line 32, in <module>\n    main()\n  File \"/home/runner/work/-AAA/-AAA/tools/fetch_manual_quote.py\", line 20, in main\n    folder.mkdir(exist_ok=False)\n  File \"/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/pathlib.py\", line 1311, in mkdir\n    os.mkdir(self, mode)\nFileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/-AAA/-AAA/data/imports/manual_quote_20260930T040413823654Z'\n"
+    },
+    {
+      "tool": "check_manual_execution.py",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/runner/work/-AAA/-AAA/tools/check_manual_execution.py\", line 114, in <module>\n    if __name__=='__main__': main()\n                             ^^^^^^\n  File \"/home/runner/work/-AAA/-AAA/tools/check_manual_execution.py\", line 100, in main\n    import msvcrt\nModuleNotFoundError: No module named 'msvcrt'\n"
+    },
+    {
+      "tool": "build_manual_account_report.py",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/runner/work/-AAA/-AAA/tools/build_manual_account_report.py\", line 76, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/runner/work/-AAA/-AAA/tools/build_manual_account_report.py\", line 20, in main\n    audit(folder)\n  File \"/home/runner/work/-AAA/-AAA/tools/audit_manual_launch.py\", line 28, in audit\n    manifest = load(folder/'manifest.json')\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/-AAA/-AAA/tools/audit_manual_launch.py\", line 24, in load\n    return json.loads(path.read_text(encoding='utf-8'))\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/pathlib.py\", line 1027, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/home/runner/work/-AAA/-AAA/reports/manual_forward_20260929T074758514815Z/manifest.json'\n"
+    }
+  ],
+  "next": "inspect sealed evidence and current report"
+}
