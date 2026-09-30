@@ -15,7 +15,7 @@ PYTHON = sys.executable
 
 def run_tool(name, *args):
     command = [PYTHON, '-X', 'utf8', str(ROOT/'tools'/name), *args]
-    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+    result = subprocess.run(command, cwd=ROOT, text=True, encoding='utf-8', capture_output=True)
     return {'tool': name, 'returncode': result.returncode,
             'stdout': result.stdout[-4000:], 'stderr': result.stderr[-4000:]}
 
