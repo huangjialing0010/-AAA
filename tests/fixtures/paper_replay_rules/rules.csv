@@ -1,0 +1,3 @@
+trade_date,code,tradestatus,upper_limit,lower_limit,buyable,sellable,source,open,evidence_id,execution_evidence_id,minimum_buy,buy_increment,sell_policy,tradable
+2025-07-09,600036,1,11,9,1,1,SYNTHETIC_TEST,10,RULE_SYNTHETIC,EXEC_SYNTHETIC,100,100,ROUND100_WITH_WHOLE_REMAINDER,1
+2025-07-10,600036,1,11,9,1,1,SYNTHETIC_TEST,10,RULE_SYNTHETIC_2,EXEC_SYNTHETIC_2,100,100,ROUND100_WITH_WHOLE_REMAINDER,1

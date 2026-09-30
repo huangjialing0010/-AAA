@@ -1,0 +1,41 @@
+name: A-share manual paper close cycle
+
+on:
+  schedule:
+    # 17:00 Asia/Shanghai on weekdays (09:00 UTC); job checks actual evidence
+    # and trading calendar, so cron timing is not treated as market time.
+    - cron: '0 9 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  close-cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run paper close cycle
+        run: python tools/run_manual_close_cycle.py | tee manual-close-cycle.json
+      - name: Upload cycle evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-close-cycle-${{ github.run_id }}
+          path: |
+            manual-close-cycle.json
+            reports/manual_execution_*/event.json
+            reports/manual_execution_*/manifest.json
+            reports/manual_paper_*/daily.md
+            reports/manual_paper_*/weekly.md
+            reports/manual_paper_*/monthly.md
+      - name: Commit appended simulation evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/imports reports
+          git diff --cached --quiet || git commit -m "paper: append close-cycle evidence"
+          git push

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "status": "SEALED",
+  "source": "SYNTHETIC_TEST_ONLY",
+  "connector_version": "TEST",
+  "entries": [
+    {
+      "path": "rules.csv",
+      "bytes": 400,
+      "sha256": "50259b8e29e1f8ae8030d5b7538cbc0bd1f9446a24e3d1b68cd239fc5a914bb8",
+      "rows": 2
+    }
+  ]
+}

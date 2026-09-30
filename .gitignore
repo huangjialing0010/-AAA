@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.py[cod]
+.python-packages/
+
+# 原始和标准数据体积较大，不直接进入 Git；保留清单与说明。
+data/imports/**
+!data/imports/**/
+!data/imports/**/manifest.json
+!data/imports/**/README.md
+data/canonical/**
+!data/canonical/.gitkeep
+reports/**
+!reports/.gitkeep

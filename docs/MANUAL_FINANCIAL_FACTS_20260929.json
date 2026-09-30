@@ -1,0 +1,51 @@
+{
+  "scope": "MANUALLY_TRANSCRIBED_AND_VISUALLY_REVIEWED_CURRENT_DISCLOSURES_ONLY",
+  "currency": "CNY",
+  "amount_unit": "yuan",
+  "candidates": {
+    "600886": {
+      "annual_pdf": "data/imports/manual_candidate_financial_20260929T061904Z/1225257588.PDF",
+      "annual_page": 5,
+      "annual_available_on": "2026-04-30",
+      "annuals": [
+        {"year": 2023, "parent_profit": "6704936953.85", "operating_cashflow": "21268122590.08", "roe_percent": "12.78"},
+        {"year": 2024, "parent_profit": "6643033266.19", "operating_cashflow": "24657128874.02", "roe_percent": "11.80"},
+        {"year": 2025, "parent_profit": "7393381322.00", "operating_cashflow": "31569574019.80", "roe_percent": "11.35"}
+      ],
+      "h1_pdf": "data/imports/manual_candidate_financial_20260929T061904Z/1225520619.PDF",
+      "h1_page": 6,
+      "h1_available_on": "2026-08-28",
+      "h1_parent_profit": "3535371481.79",
+      "prior_h1_parent_profit": "3794528034.58",
+      "h1_operating_cashflow": "10948606374.24",
+      "prior_h1_operating_cashflow": "14095842639.54"
+    },
+    "600674": {
+      "annual_pdf": "data/imports/manual_candidate_financial_20260929T061630Z/1225117474.PDF",
+      "annual_page": 7,
+      "annual_available_on": "2026-04-18",
+      "annuals": [
+        {"year": 2023, "parent_profit": "4400136762.78", "operating_cashflow": "595661247.31", "roe_percent": "12.63"},
+        {"year": 2024, "parent_profit": "4507725742.38", "operating_cashflow": "879455226.51", "roe_percent": "11.10"},
+        {"year": 2025, "parent_profit": "4754148319.50", "operating_cashflow": "762890300.36", "roe_percent": "10.97"}
+      ]
+    },
+    "605499": {
+      "annual_pdf": "data/imports/manual_candidate_financial_20260929T061630Z/1225063528.PDF",
+      "annual_page": 11,
+      "annual_available_on": "2026-03-31",
+      "annuals": [
+        {"year": 2023, "parent_profit": "2039772803.92", "operating_cashflow": "3281269652.65", "roe_percent": "35.82"},
+        {"year": 2024, "parent_profit": "3326708852.44", "operating_cashflow": "5789408508.54", "roe_percent": "46.93"},
+        {"year": 2025, "parent_profit": "4415263147.79", "operating_cashflow": "6174239867.75", "roe_percent": "51.61"}
+      ],
+      "h1_pdf": "data/imports/official_watchlist_reports_20260928T064505Z/reports/605499_2026H1.pdf",
+      "h1_page": 6,
+      "h1_available_on": "2026-07-31",
+      "h1_parent_profit": "2866801858.34",
+      "prior_h1_parent_profit": "2374750785.44",
+      "h1_operating_cashflow": "2492600974.20",
+      "prior_h1_operating_cashflow": "1740460562.79"
+    }
+  }
+}

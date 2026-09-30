@@ -1,0 +1,2 @@
+# 仅安装到项目目录 .python-packages/，禁止全局安装。
+baostock==0.9.3
