@@ -96,19 +96,10 @@ def run():
 
 
 def main():
-    # OS lock releases even if this process crashes; the marker is never deleted.
-    import msvcrt
-    with (ROOT/'reports/manual_execution.lock').open('a+b') as lock:
-        if lock.seek(0,2)==0:
-            lock.write(b'0')
-            lock.flush()
-        lock.seek(0)
-        msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
-        try:
-            run()
-        finally:
-            lock.seek(0)
-            msvcrt.locking(lock.fileno(),msvcrt.LK_UNLCK,1)
+    from manual_process_lock import exclusive_lock
+    (ROOT/'reports').mkdir(exist_ok=True)
+    with exclusive_lock(ROOT/'reports/manual_execution.lock'):
+        run()
 
 
 if __name__=='__main__': main()
