@@ -2,52 +2,118 @@ name: A-share manual paper close cycle
 
 on:
   schedule:
-    # 17:00 Asia/Shanghai on weekdays (09:00 UTC); job checks actual evidence
-    # and trading calendar, so cron timing is not treated as market time.
+    # 17:00 Asia/Shanghai. A schedule is not proof of a trading day.
     - cron: '0 9 * * 1-5'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: manual-paper-account
+  cancel-in-progress: false
+
 jobs:
   close-cycle:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Verify project tests
+        run: python -X utf8 -m unittest discover -s tests
       - name: Run paper close cycle
-        run: python tools/run_manual_close_cycle.py | tee manual-close-cycle.json
+        id: cycle
+        run: |
+          set -euo pipefail
+          mkdir -p data/imports reports
+          python -X utf8 tools/run_manual_close_cycle.py | tee manual-close-cycle.json
       - name: Publish latest paper reports
-        shell: bash
+        id: publish
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import shutil
+          from datetime import datetime, timezone
+          from pathlib import Path
+          cycle = json.loads(Path('manual-close-cycle.json').read_text(encoding='utf-8'))
+          if not cycle.get('steps') or any(s['returncode'] != 0 for s in cycle['steps']):
+              raise SystemExit('Cycle contains a failed step')
+          started = datetime.fromisoformat(cycle['started_at'])
+          candidates = []
+          for folder in Path('reports').glob('manual_paper_*'):
+              try:
+                  stamp = datetime.strptime(folder.name, 'manual_paper_%Y%m%dT%H%M%S%fZ').replace(tzinfo=timezone.utc)
+              except ValueError:
+                  continue
+              if stamp >= started:
+                  candidates.append(folder)
+          if len(candidates) != 1:
+              raise SystemExit('Expected exactly one new report from this run; refusing stale reports')
+          folder = candidates[0]
+          names = ('daily.md', 'weekly.md', 'monthly.md', 'report.json')
+          manifest = json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
+          for name in names:
+              if hashlib.sha256((folder/name).read_bytes()).hexdigest() != manifest['files'][name]:
+                  raise SystemExit('Report hash mismatch: ' + name)
+          target = Path('reports/latest')
+          target.mkdir(parents=True, exist_ok=True)
+          for name in names:
+              shutil.copyfile(folder/name, target/name)
+          PY
+      - name: Record visible runtime status
+        if: always()
+        env:
+          CYCLE_OUTCOME: ${{ steps.cycle.outcome }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
         run: |
           mkdir -p reports/latest
-          latest_dir="$(find reports -maxdepth 1 -type d -name 'manual_paper_*' | sort | tail -n 1)"
-          if [ -n "$latest_dir" ]; then
-            for file in daily.md weekly.md monthly.md report.json; do
-              if [ -f "$latest_dir/$file" ]; then
-                cp "$latest_dir/$file" "reports/latest/$file"
-              fi
-            done
-          fi
+          python - <<'PY'
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          cycle = os.environ['CYCLE_OUTCOME']
+          publish = os.environ['PUBLISH_OUTCOME']
+          ok = cycle == 'success' and publish == 'success'
+          url = os.environ['GITHUB_SERVER_URL'] + '/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
+          body = '# 模拟系统运行状态\n\n'
+          body += '检查时间（UTC）：' + datetime.now(timezone.utc).isoformat() + '\n\n'
+          body += '**' + ('本批流程与报告发布通过；交易情况以账本报告为准。' if ok else '本批未完成有效账户报告，请勿将旧报告视为今天结果。') + '**\n\n'
+          body += '- 收盘流程：' + cycle + '\n- 报告发布：' + publish + '\n'
+          body += '\n[查看本批日志](' + url + ')\n\n'
+          body += '本页是运行状态，不是账户日报，不代表模拟成交或投资收益。\n'
+          Path('reports/latest/status.md').write_text(body, encoding='utf-8')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as handle:
+              handle.write(body)
+          PY
       - name: Upload cycle evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: manual-close-cycle-${{ github.run_id }}
           path: |
             manual-close-cycle.json
+            reports/latest/status.md
             reports/manual_execution_*/event.json
             reports/manual_execution_*/manifest.json
-            reports/manual_paper_*/daily.md
-            reports/manual_paper_*/weekly.md
-            reports/manual_paper_*/monthly.md
-      - name: Commit appended simulation evidence
+            reports/manual_paper_*/*
+      - name: Commit allowed reports only
+        if: always()
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet || git commit -m "paper: append close-cycle evidence"
-          git push
+          for file in reports/latest/status.md reports/latest/daily.md reports/latest/weekly.md reports/latest/monthly.md reports/latest/report.json; do
+            if [ -f "$file" ]; then git add -- "$file"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "paper: publish runtime status and verified reports"
+            git push
+          fi
