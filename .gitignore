@@ -12,3 +12,6 @@ data/canonical/**
 !data/canonical/.gitkeep
 reports/**
 !reports/.gitkeep
+!reports/latest/
+!reports/latest/*.md
+!reports/latest/*.json
